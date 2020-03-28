@@ -17,14 +17,15 @@ function translate(shift, input, output, actions) {
   //   console.log('data: ', ceaser(data, shift, actions));
   // });
   stream.on('data', data => {
-    console.log('Данные получены');
-    console.log('data: ', ceaser(data, shift, actions));
+    // console.log('Данные получены');
+    // console.log('data: ', ceaser(data, shift, actions));
     const _data = ceaser(data, shift, actions);
     writeStream.write(`${_data}\n`);
     writeStream.end();
   });
   writeStream.on('finish', () => {
     console.log('The data is writed!');
+    process.exitCode = 2;
     process.on('exit', code => {
       console.log(`About to exit with code: ${code}`);
     });
@@ -35,7 +36,8 @@ function translate(shift, input, output, actions) {
   });
   stream.on('error', err => {
     if (err.code === 'ENOENT') {
-      process.stderr.write('Файла ненайден!');
+      process.exitCode = 1;
+      process.stderr.write('Файла ненайден!\t');
       process.on('exit', code => {
         console.log(`About to exit with code: ${code}`);
       });
