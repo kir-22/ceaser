@@ -44,5 +44,15 @@ if (program.actions === undefined) {
         writeStream.end();
       }
     });
+  } else if (!program.output) {
+    const stream = fs.createReadStream(path.join(__dirname, input), 'utf-8');
+    stream.on('data', data => {
+      const _data = ceaser(data, shift, actions);
+      process.stdout.write(`Шифровка/Расшифровка: ${_data}\n`);
+      process.exitCode = 2;
+      process.on('exit', code => {
+        console.log(`About to exit with code: ${code}`);
+      });
+    });
   }
 }
